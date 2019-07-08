@@ -7,6 +7,9 @@
 <a title="Buy us a coffee :)" href="https://ko-fi.com/massimmersionapproach"><img src="https://img.shields.io/badge/ko--fi-contribute-%23579ebd.svg"></a>
 <a title="Support us on Patreon" href="https://www.patreon.com/massimmersionapproach/posts"><img src="https://img.shields.io/badge/patreon-support-%23f96854.svg"></a>
 <br>
+<a title="Subscribe to YogaMIA" href="https://www.youtube.com/c/yogamia"><img src="https://img.shields.io/badge/YouTube-YogaMIA-red.svg"></a>
+<a title="Subscribe to Matt vs Japan" href="https://www.youtube.com/user/MATTvsJapan"><img src="https://img.shields.io/badge/YouTube-Matt vs Japan-red.svg"></a>
+<br>
 <a title="Follow me on Twitter" href="https://twitter.com/intent/user?screen_name=Yoga_MIA"><img src="https://img.shields.io/twitter/follow/Yoga_MIA.svg"></a>
 <a title="Follow me on Twitter" href="https://twitter.com/intent/user?screen_name=mattvsjapan"><img src="https://img.shields.io/twitter/follow/mattvsjapan.svg"></a>
 </p>
