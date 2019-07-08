@@ -5,7 +5,7 @@
 <a title="License: GNU AGPLv3" href="https://github.com/LucasMIA/MIAJapaneseSupportAddon/blob/master/LICENSE"><img  src="https://img.shields.io/badge/license-GNU AGPLv3-green.svg"></a>
 <br>
 <a title="Buy us a coffee :)" href="https://ko-fi.com/massimmersionapproach"><img src="https://img.shields.io/badge/ko--fi-contribute-%23579ebd.svg"></a>
-<a title="Support us on Patreon" href="https://www.patreon.com/massimmersionapproach/posts"><img src="https://img.shields.io/badge/patreon-support-%23f96854.svg"></a>
+<a title="Support us on Patreon" href="https://www.patreon.com/massimmersionapproach/posts"><img src="https://img.shields.io/badge/patreon-support-orange.svg"></a>
 <br>
 <a title="Subscribe to YogaMIA" href="https://www.youtube.com/c/yogamia"><img src="https://img.shields.io/badge/YouTube-YogaMIA-red.svg"></a>
 <a title="Subscribe to Matt vs Japan" href="https://www.youtube.com/user/MATTvsJapan"><img src="https://img.shields.io/badge/YouTube-Matt vs Japan-red.svg"></a>
