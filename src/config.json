@@ -1,0 +1,7 @@
+{   
+    "Retirement Deck Name" : "Retired Cards",
+    "Retirement Tag": "Retired",
+    "Mass Retirement on Startup" :  "off",
+    "Real-time Notifications" :  "off",
+    "Mass Retirement Notifications" : "on"
+}
