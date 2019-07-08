@@ -45,7 +45,7 @@ Contributions are welcome! Please review the [contribution guidelines](./.github
 
 *MIA Retirement Addon* is
 
-*Copyright © 2019 MIA
+*Copyright © 2019 Mass Immersion Approach
 
 MIA Retirement Addon is free and open-source software. The add-on code that runs within Anki is released under the GNU AGPLv3 license, extended by a number of additional terms. For more information please see the [LICENSE](https://github.com/glutanimate/syntax-highlighting/blob/master/LICENSE) file that accompanied this program.
 
