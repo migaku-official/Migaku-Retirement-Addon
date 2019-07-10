@@ -18,7 +18,7 @@
 
 ### Table of Contents
 
-- [Video Demonstration](https://www.youtube.com/watch?v=lWYo7NG9y04)
+- [Video Demonstration](https://youtu.be/2bhWHq7Cu6k?t=134)
 - [Installation](#installation)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
