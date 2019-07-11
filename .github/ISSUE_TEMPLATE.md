@@ -14,7 +14,6 @@ Fill out all those parts which you're comfortable with, and delete the remaining
 <!-- If you found a bug, the following information might prove to be helpful for us. Simply remove whatever you can't determine/don't know. -->
 #### Details about the bug: 
 
-- Web browser and version: <!-- On Chrome/FireFox/Opera you can enter "about:" in the address bar to find out the version -->
 - Operating System: <!-- Ex: Windows/MacOSX/Linux along with version -->
 - Steps to reproduce this bug:
 
