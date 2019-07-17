@@ -154,7 +154,6 @@ def getProgressWidget():
 def applyRetirementActions(notes = False, showNotification = True):
     notesToDelete = []
     cardsToMove = []
-    rDeck = mw.col.decks.id(RetirementDeckName)
     suspended = 0
     tagged = 0
     total = 0
@@ -177,7 +176,7 @@ def applyRetirementActions(notes = False, showNotification = True):
         for card in cards:
             if card.ivl == 0:
                 continue
-            notesToDelete, cardsToMove, suspended,tagged, total, checkpointed = handleRetirementActions(card, note, rDeck, notesToDelete, cardsToMove, suspended,tagged, total, checkpointed)
+            notesToDelete, cardsToMove, suspended,tagged, total, checkpointed = handleRetirementActions(card, note, notesToDelete, cardsToMove, suspended,tagged, total, checkpointed)
     notification = '' 
     ndl = len(notesToDelete) 
     cml = len(cardsToMove) 
@@ -188,7 +187,7 @@ def applyRetirementActions(notes = False, showNotification = True):
         notification +='- '+  str(tagged) + ' note(s) have been tagged<br>'
     if cml > 0:
         notification +='- '+  str(cml) + ' card(s) have been moved<br>'
-        moveToDeck(rDeck, cardsToMove)
+        moveToDeck(cardsToMove)
     if ndl > 0:
         notification +='- '+  str(ndl) + ' note(s) have been deleted<br>'
         mw.col.remNotes(notesToDelete)   
@@ -201,7 +200,7 @@ def setCheckpointed(checkpointed, review):
             mw.checkpoint("Card Retirement")
     return True
 
-def handleRetirementActions(card, note, rDeck, notesToDelete, cardsToMove, suspended,tagged, total, checkpointed, review = False):
+def handleRetirementActions(card, note, notesToDelete, cardsToMove, suspended,tagged, total, checkpointed, review = False):
     conf = mw.col.decks.confForDid(card.odid or card.did)['new']
     if 'retirementActions' in conf and 'retiringInterval' in conf:
         if conf['retiringInterval'] > 0 and raSet(conf['retirementActions']):
@@ -229,7 +228,7 @@ def handleRetirementActions(card, note, rDeck, notesToDelete, cardsToMove, suspe
                             note.flush()
                     if rAct['move']:
                         checkpointed = setCheckpointed(checkpointed, review)
-                        if card.did != rDeck:
+                        if card.did != mw.col.decks.id(RetirementDeckName):
                             cardsToMove.append(card.id)
     return notesToDelete, cardsToMove, suspended,tagged, total, checkpointed;
 
@@ -239,8 +238,8 @@ def mia(text):
 def grabCol():
     return anki.find.Finder(mw.col).findNotes('')
 
-def moveToDeck(did, cids):
-    
+def moveToDeck(cids):
+    did = mw.col.decks.id(RetirementDeckName)
     from aqt.studydeck import StudyDeck
     if not cids:
         return
@@ -256,7 +255,6 @@ update cards set usn=?, mod=?, did=? where id in """ + scids,
                             usn, mod, did)
 
 def checkInterval(self, card, ease):
-    rDeck = mw.col.decks.id(RetirementDeckName)
     workingCard = copy.copy(card)
     notesToDelete = []
     cardsToMove = []
@@ -265,7 +263,7 @@ def checkInterval(self, card, ease):
     total = 0
     checkpointed = False
     note = mw.col.getNote(card.nid)
-    notesToDelete, cardsToMove, suspended,tagged, total, checkpointed = handleRetirementActions(card, note, rDeck, notesToDelete, cardsToMove, suspended,tagged, total, checkpointed, True)
+    notesToDelete, cardsToMove, suspended,tagged, total, checkpointed = handleRetirementActions(card, note, notesToDelete, cardsToMove, suspended,tagged, total, checkpointed, True)
     ndl = len(notesToDelete) 
     cml = len(cardsToMove) 
     if suspended > 0 or tagged > 0 or cml > 0 or ndl > 0:
@@ -274,7 +272,7 @@ def checkInterval(self, card, ease):
         if cml > 0:
             mw.col._undo[2][last].retirementActions.append('move')
             mw.col._undo[2][last].retirementActions.append(card.did)
-            moveToDeck(rDeck, cardsToMove)
+            moveToDeck(cardsToMove)
             mw.col.db._db.commit()
         if ndl > 0:
             undoCopy = mw.col._undo
@@ -443,7 +441,7 @@ def openSettings():
     vl.addWidget(bg3)
     vl.addLayout(vh6)
     loadCurrent(rt, rdn, bg1b1, bg1b2, bg2b1, bg2b2, bg3b1, bg3b2)
-    retirementMenu.setWindowTitle("Retirement Addon Settings")
+    retirementMenu.setWindowTitle("Retirement Add-on Settings")
     retirementMenu.setWindowIcon(QIcon(join(addon_path, 'mia.png')))
     retirementMenu.setLayout(vl)
     retirementMenu.show()
