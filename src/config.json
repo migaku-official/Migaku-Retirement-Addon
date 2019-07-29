@@ -3,5 +3,6 @@
     "Retirement Tag": "Retired",
     "Mass Retirement on Startup" :  "off",
     "Real-time Notifications" :  "off",
-    "Mass Retirement Notifications" : "on"
+    "Mass Retirement Notifications" : "on",
+    "Last Mass Retirement" : 0
 }
