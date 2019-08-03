@@ -15,6 +15,7 @@ from anki import sched
 from anki import schedv2
 from anki.collection import _Collection
 import copy
+import time
 
 addon_path = dirname(__file__)
 
@@ -25,17 +26,24 @@ def startingRefresh():
     refreshConfig()
     if RetroactiveRetiring:
         applyRetirementActions()
+    elif DailyRetiring:
+        if (time.time() - LastMassRetirement > 86400000):
+            applyRetirementActions()
 
 def refreshConfig():
-    global RetirementDeckName, RetirementTag, RetroactiveRetiring, RealNotifications, RetroNotifications
+    global RetirementDeckName, RetirementTag, RetroactiveRetiring, DailyRetiring, LastMassRetirement, RealNotifications, RetroNotifications
     config = getConfig()
     RetirementDeckName = config["Retirement Deck Name"]
     RetirementTag = config["Retirement Tag"]
     RetroactiveRetiring = False
     RealNotifications = False
     RetroNotifications = False
+    DailyRetiring = False
+    LastMassRetirement = config["Last Mass Retirement"]
     if config["Mass Retirement on Startup"] == 'on':
         RetroactiveRetiring = True
+    if config["Mass Retirement on Startup"] == 'once':
+        DailyRetiring = True
     if config["Real-time Notifications"] == 'on':
         RealNotifications = True
     if config["Mass Retirement Notifications"] == 'on':
@@ -194,6 +202,7 @@ def applyRetirementActions(notes = False, showNotification = True):
     if notification != '' and RetroNotifications:
         mia('<b>'+ str(total) + ' card(s) have been retired:</b><br>' + notification)
     mw.reset()
+    saveMassRetirementTimestamp(time.time())
 
 def setCheckpointed(checkpointed, review):
     if not checkpointed and not review:
@@ -333,9 +342,11 @@ _Collection._undoReview = miaRetUndoReview
 ogUndo = _Collection.undo
 _Collection.undo = miaRetUndo
 
-def saveConfig(wid,rdn, rt, retroR, realN, retroN):
+def saveConfig(wid,rdn, rt, retroR, dailyR, realN, retroN):
     if retroR:
         retroR = 'on'
+    elif dailyR:
+        retroR = 'once'
     else:
         retroR = 'off'
     if realN:
@@ -346,7 +357,7 @@ def saveConfig(wid,rdn, rt, retroR, realN, retroN):
         retroN = 'on'
     else:
         retroN = 'off'
-    conf = {"Retirement Deck Name" : rdn, "Retirement Tag": rt, "Mass Retirement on Startup": retroR, "Real-time Notifications" : realN, "Mass Retirement Notifications" : retroN }
+    conf = {"Retirement Deck Name" : rdn, "Retirement Tag": rt, "Mass Retirement on Startup": retroR, "Real-time Notifications" : realN, "Mass Retirement Notifications" : retroN, "Last Mass Retirement" : LastMassRetirement }
     mw.addonManager.writeConfig(__name__, conf)
     refreshConfig()
     wid.hide()
@@ -370,14 +381,16 @@ def openSettings():
     rt = QLineEdit()
     rt.setFixedWidth(229)
     l3 = QLabel()
-    l3.setText('Mass Retirement on Startup:')
+    l3.setText('Run Mass Retirement:')
     l3.setToolTip("Automatically run mass retirement on profile load.")
     l3.setFixedWidth(210)
     bg1= QGroupBox()  
-    bg1b1 = QRadioButton("On")
+    bg1b1 = QRadioButton("On Startup")
     bg1b1.setFixedWidth(90)
-    bg1b2 = QRadioButton("Off")
-    bg1b2.setFixedWidth(100)
+    bg1b2 = QRadioButton("Once Daily")
+    bg1b2.setFixedWidth(90)
+    bg1b3 = QRadioButton("Off")
+    bg1b3.setFixedWidth(40)
     l4 = QLabel()
     l4.setText('Real-time Notifications:')
     l4.setToolTip("Display a notification when a card is retired while reviewing.")
@@ -397,7 +410,7 @@ def openSettings():
     bg3b2 = QRadioButton("Off")
     bg3b2.setFixedWidth(100)
     applyb =  QPushButton('Apply')
-    applyb.clicked.connect(lambda: saveConfig(retirementMenu, rdn.text(), rt.text(),bg1b1.isChecked(),bg2b1.isChecked(),bg3b1.isChecked()))
+    applyb.clicked.connect(lambda: saveConfig(retirementMenu, rdn.text(), rt.text(),bg1b1.isChecked(), bg1b2.isChecked(), bg2b1.isChecked(),bg3b1.isChecked()))
     applyb.setFixedWidth(100)
     cancelb =  QPushButton('Cancel')
     cancelb.clicked.connect(lambda: retirementMenu.hide())
@@ -415,6 +428,7 @@ def openSettings():
     vh3.addWidget(l3)
     vh3.addWidget(bg1b1)
     vh3.addWidget(bg1b2)
+    vh3.addWidget(bg1b3)
     vh4.addWidget(l4)
     vh4.addWidget(bg2b1)
     vh4.addWidget(bg2b2)
@@ -440,20 +454,22 @@ def openSettings():
     vl.addWidget(bg2)
     vl.addWidget(bg3)
     vl.addLayout(vh6)
-    loadCurrent(rt, rdn, bg1b1, bg1b2, bg2b1, bg2b2, bg3b1, bg3b2)
+    loadCurrent(rt, rdn, bg1b1, bg1b2, bg1b3, bg2b1, bg2b2, bg3b1, bg3b2)
     retirementMenu.setWindowTitle("Retirement Add-on Settings")
     retirementMenu.setWindowIcon(QIcon(join(addon_path, 'mia.png')))
     retirementMenu.setLayout(vl)
     retirementMenu.show()
     retirementMenu.setFixedSize(retirementMenu.size())
 
-def loadCurrent(rt, rdn, bg1b1, bg1b2, bg2b1, bg2b2, bg3b1, bg3b2):
+def loadCurrent(rt, rdn, bg1b1, bg1b2, bg1b3, bg2b1, bg2b2, bg3b1, bg3b2):
     rt.setText(RetirementTag)
     rdn.setText(RetirementDeckName)
     if RetroactiveRetiring:
         bg1b1.setChecked(True)
-    else:
+    elif DailyRetiring:
         bg1b2.setChecked(True)
+    else:
+        bg1b3.setChecked(True)
     if RealNotifications:
         bg2b1.setChecked(True)
     else:
@@ -462,6 +478,11 @@ def loadCurrent(rt, rdn, bg1b1, bg1b2, bg2b1, bg2b2, bg3b1, bg3b2):
         bg3b1.setChecked(True)
     else:
         bg3b2.setChecked(True)
+
+def saveMassRetirementTimestamp(timestamp):
+    config = getConfig()
+    config["Last Mass Retirement"] = timestamp
+    mw.addonManager.writeConfig(__name__, config)
 
 def setupMenu():
     addMenu = False
