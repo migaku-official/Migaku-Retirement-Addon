@@ -160,7 +160,7 @@ def getProgressWidget():
     return progressWidget, bar;
 
 def applyRetirementActions(notes = False, showNotification = True):
-    timeStart = time.time() / 1000
+    timeStart = time.time()
     notesToDelete = []
     cardsToMove = []
     suspended = 0
@@ -200,9 +200,9 @@ def applyRetirementActions(notes = False, showNotification = True):
     if ndl > 0:
         notification +='- '+  str(ndl) + ' note(s) have been deleted<br>'
         mw.col.remNotes(notesToDelete)
-    timeEnd = time.time() / 1000   
+    timeEnd = time.time()  
     if notification != '' and RetroNotifications:
-        mia('<b>'+ str(total) + ' card(s) have been retired in ' + str(round(timeEnd - timeStart, 5)) + ' seconds:</b><br>' + notification)
+        mia('<b>'+ str(total) + ' card(s) have been retired in ' + str(round(timeEnd - timeStart, 3)) + ' seconds:</b><br>' + notification)
     mw.reset()
     saveMassRetirementTimestamp(time.time())
 
