@@ -60,7 +60,7 @@ def cbStatusCheck(dn,sc, tn, mc):
         mc.setEnabled(True)
 
 def addRetirementOpts(self, Dialog):
-    row = 7
+    row = self.gridLayout_3.rowCount()
     wid = QLabel("<b>Card Retirement</b>")
     self.gridLayout_3.addWidget(wid, row, 0, 1, 1)
     row += 1
