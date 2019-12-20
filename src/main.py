@@ -22,28 +22,33 @@ addon_path = dirname(__file__)
 def getConfig():
     return mw.addonManager.getConfig(__name__)
 
+def attemptStartingRefresh():
+    if hasattr(mw, 'MIARescheduler'):
+        return
+    startingRefresh()
+
 def startingRefresh():
     refreshConfig()
-    if RetroactiveRetiring:
+    if mw.RetroactiveRetiring:
         applyRetirementActions()
-    elif DailyRetiring:
-        if (time.time() - LastMassRetirement > 86400000):
+    elif mw.DailyRetiring:
+        if (time.time() - mw.LastMassRetirement > 86400000):
             applyRetirementActions()
 
 def refreshConfig():
-    global RetirementDeckName, RetirementTag, RetroactiveRetiring, DailyRetiring, LastMassRetirement, RealNotifications, RetroNotifications
+    global RetirementDeckName, RetirementTag, RealNotifications, RetroNotifications
     config = getConfig()
     RetirementDeckName = config["Retirement Deck Name"]
     RetirementTag = config["Retirement Tag"]
-    RetroactiveRetiring = False
+    mw.RetroactiveRetiring = False
     RealNotifications = False
     RetroNotifications = False
-    DailyRetiring = False
-    LastMassRetirement = config["Last Mass Retirement"]
+    mw.DailyRetiring = False
+    mw.LastMassRetirement = config["Last Mass Retirement"]
     if config["Mass Retirement on Startup"] == 'on':
-        RetroactiveRetiring = True
+        mw.RetroactiveRetiring = True
     if config["Mass Retirement on Startup"] == 'once':
-        DailyRetiring = True
+        mw.DailyRetiring = True
     if config["Real-time Notifications"] == 'on':
         RealNotifications = True
     if config["Mass Retirement Notifications"] == 'on':
@@ -159,7 +164,7 @@ def getProgressWidget():
     progressWidget.show()
     return progressWidget, bar;
 
-def applyRetirementActions(notes = False, showNotification = True):
+def applyRetirementActions(notes = False, showNotification = True, optimizer = False):
     timeStart = time.time()
     notesToDelete = []
     cardsToMove = []
@@ -167,10 +172,11 @@ def applyRetirementActions(notes = False, showNotification = True):
     tagged = 0
     total = 0
     progressWidget, progressBar = getProgressWidget()
-    mw.checkpoint('Card Retirement')
+    if not optimizer:
+        mw.checkpoint('Card Retirement')
     if not notes:
         notes = grabCol()
-    checkpointed = False
+    checkpointed = True
     progressBar.setMinimum(0)
     progressBar.setMaximum(len(notes))
     count = 0
@@ -359,7 +365,7 @@ def saveConfig(wid,rdn, rt, retroR, dailyR, realN, retroN):
         retroN = 'on'
     else:
         retroN = 'off'
-    conf = {"Retirement Deck Name" : rdn, "Retirement Tag": rt, "Mass Retirement on Startup": retroR, "Real-time Notifications" : realN, "Mass Retirement Notifications" : retroN, "Last Mass Retirement" : LastMassRetirement }
+    conf = {"Retirement Deck Name" : rdn, "Retirement Tag": rt, "Mass Retirement on Startup": retroR, "Real-time Notifications" : realN, "Mass Retirement Notifications" : retroN, "Last Mass Retirement" : mw.LastMassRetirement }
     mw.addonManager.writeConfig(__name__, conf)
     refreshConfig()
     wid.hide()
@@ -466,9 +472,9 @@ def openSettings():
 def loadCurrent(rt, rdn, bg1b1, bg1b2, bg1b3, bg2b1, bg2b2, bg3b1, bg3b2):
     rt.setText(RetirementTag)
     rdn.setText(RetirementDeckName)
-    if RetroactiveRetiring:
+    if mw.RetroactiveRetiring:
         bg1b1.setChecked(True)
-    elif DailyRetiring:
+    elif mw.DailyRetiring:
         bg1b2.setChecked(True)
     else:
         bg1b3.setChecked(True)
@@ -519,7 +525,7 @@ schedv2.Scheduler.answerCard = wrap(schedv2.Scheduler.answerCard, checkInterval)
 aqt.deckconf.DeckConf.loadConf = wrap(aqt.deckconf.DeckConf.loadConf, loadRetirement)
 aqt.deckconf.DeckConf.saveConf = wrap(aqt.deckconf.DeckConf.saveConf, saveRetirement, "before")
 aqt.forms.dconf.Ui_Dialog.setupUi = wrap(aqt.forms.dconf.Ui_Dialog.setupUi, addRetirementOpts)
-addHook("profileLoaded", startingRefresh)
+addHook("profileLoaded", attemptStartingRefresh)
 
 def supportAccept(self):
     if self.addon == os.path.basename(addon_path):
@@ -527,3 +533,6 @@ def supportAccept(self):
 
 aqt.addons.ConfigEditor.accept = wrap(aqt.addons.ConfigEditor.accept, supportAccept)
 
+
+mw.refreshRetirementConfig = refreshConfig
+mw.runMIARetirement = applyRetirementActions
