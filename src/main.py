@@ -255,8 +255,11 @@ def mia(text):
 def grabCol():
     return anki.find.Finder(mw.col).findNotes('')
 
-def moveToDeck(cids):
-    did = mw.col.decks.id(RetirementDeckName)
+def moveToDeck(cids, ogDeckId = False):
+    if ogDeckId:
+        did = ogDeckId
+    else:
+        did = mw.col.decks.id(RetirementDeckName)
     from aqt.studydeck import StudyDeck
     if not cids:
         return
@@ -316,7 +319,7 @@ def miaRetUndoReview(self):
             c.note().delTag(RetirementTag)
             c.note().flush()
         if c.retirementActions[0] == 'move':
-            moveToDeck(c.retirementActions[1], [c.id])
+            moveToDeck([c.id], c.retirementActions[1])
         del c.retirementActions
         c.flush()
         last = self.db.scalar(
@@ -332,7 +335,7 @@ def miaRetUndoReview(self):
         self.sched.reps -= 1
         return c.id
     else:
-        ogUndoReview(mw.col)
+        return ogUndoReview(mw.col)
 
 def miaRetUndo(self):
     
@@ -342,7 +345,7 @@ def miaRetUndo(self):
         self._undo = tempUndo
         self.undo()
     else:
-        ogUndo(mw.col)
+        return ogUndo(mw.col)
 
 ogUndoReview = _Collection._undoReview
 _Collection._undoReview = miaRetUndoReview
