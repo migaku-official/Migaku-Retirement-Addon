@@ -80,10 +80,7 @@ def addRetirementOpts(self, Dialog):
     self.hardFactor.setFixedWidth(60)
     self.rInt.setFixedWidth(60)
    
-    self.label_15.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Fixed)
     self.label_23.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Fixed)
-    self.label_34.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Fixed)
-    self.label_21.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Fixed)
     self.gridLayout_3.addWidget(QLabel("Retiring interval (0 = off)"), row, 0, 1, 1)
     self.gridLayout_3.addWidget(self.rInt, row, 1, 1, 1)
     dayLab = QLabel("days")
