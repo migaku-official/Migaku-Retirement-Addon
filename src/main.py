@@ -19,8 +19,11 @@ import time
 
 addon_path = dirname(__file__)
 
+
 def getConfig():
     return mw.addonManager.getConfig(__name__)
+
+RetirementTag = getConfig()["Retirement Tag"]
 
 def attemptStartingRefresh():
     if hasattr(mw, 'MIARescheduler'):
