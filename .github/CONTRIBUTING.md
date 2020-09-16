@@ -1,4 +1,4 @@
-# Contributing to the MIA Retirement Addon 
+# Contributing to the Migaku Retirement Addon 
 
 <!-- If you change any of the headings in this document, remember to update the table of contents. -->
 - [How Can I Contribute?](#how-can-i-contribute)

@@ -26,7 +26,7 @@ def getConfig():
 RetirementTag = getConfig()["Retirement Tag"]
 
 def attemptStartingRefresh():
-    if hasattr(mw, 'MIARescheduler'):
+    if hasattr(mw, 'MigakuRescheduler'):
         return
     startingRefresh()
 
@@ -208,7 +208,7 @@ def applyRetirementActions(notes = False, showNotification = True, optimizer = F
         mw.col.remNotes(notesToDelete)
     timeEnd = time.time()  
     if notification != '' and RetroNotifications:
-        mia('<b>'+ str(total) + ' card(s) have been retired in ' + str(round(timeEnd - timeStart, 3)) + ' seconds:</b><br>' + notification)
+        migaku('<b>'+ str(total) + ' card(s) have been retired in ' + str(round(timeEnd - timeStart, 3)) + ' seconds:</b><br>' + notification)
     mw.reset()
     saveMassRetirementTimestamp(time.time())
 
@@ -249,8 +249,8 @@ def handleRetirementActions(card, note, notesToDelete, cardsToMove, suspended,ta
                             cardsToMove.append(card.id)
     return notesToDelete, cardsToMove, suspended,tagged, total, checkpointed;
 
-def mia(text):
-    showInfo(text ,False,"", "info", "MIA Card Retirement")
+def migaku(text):
+    showInfo(text ,False,"", "info", "Migaku Card Retirement")
 
 def grabCol():
     return anki.find.Finder(mw.col).findNotes('')
@@ -304,7 +304,7 @@ def checkInterval(self, card, ease):
         if(RealNotifications):
             tooltip('The card has been retired.')
 
-def miaRetUndoReview(self):
+def migakuRetUndoReview(self):
     lastAdded = len(mw.col._undo[2]) - 1
     if hasattr(self._undo[2][lastAdded], 'retirementActions') and len(self._undo[2][lastAdded].retirementActions) > 0:
         data = self._undo[2]
@@ -337,7 +337,7 @@ def miaRetUndoReview(self):
     else:
         return ogUndoReview(mw.col)
 
-def miaRetUndo(self):
+def migakuRetUndo(self):
     
     if self._undo[0] != 1 and self._undo[1] == "Card Retirement" and len(self._undo) > 2:
         tempUndo = self._undo[2]
@@ -348,10 +348,10 @@ def miaRetUndo(self):
         return ogUndo(mw.col)
 
 ogUndoReview = _Collection._undoReview
-_Collection._undoReview = miaRetUndoReview
+_Collection._undoReview = migakuRetUndoReview
 
 ogUndo = _Collection.undo
-_Collection.undo = miaRetUndo
+_Collection.undo = migakuRetUndo
 
 def saveConfig(wid,rdn, rt, retroR, dailyR, realN, retroN):
     if retroR:
@@ -466,8 +466,8 @@ def openSettings():
     vl.addWidget(bg3)
     vl.addLayout(vh6)
     loadCurrent(rt, rdn, bg1b1, bg1b2, bg1b3, bg2b1, bg2b2, bg3b1, bg3b2)
-    retirementMenu.setWindowTitle("Retirement Add-on Settings")
-    retirementMenu.setWindowIcon(QIcon(join(addon_path, 'mia.png')))
+    retirementMenu.setWindowTitle("Migaku Retirement Add-on Settings")
+    retirementMenu.setWindowIcon(QIcon(join(addon_path, 'migaku.png')))
     retirementMenu.setLayout(vl)
     retirementMenu.show()
     retirementMenu.setFixedSize(retirementMenu.size())
@@ -497,30 +497,30 @@ def saveMassRetirementTimestamp(timestamp):
 
 def setupMenu():
     addMenu = False
-    if not hasattr(mw, 'MIAMainMenu'):
-        mw.MIAMainMenu = QMenu('MIA',  mw)
+    if not hasattr(mw, 'MigakuMainMenu'):
+        mw.MigakuMainMenu = QMenu('Migaku',  mw)
         addMenu = True
-    if not hasattr(mw, 'MIAMenuSettings'):
-        mw.MIAMenuSettings = []
-    if not hasattr(mw, 'MIAMenuActions'):
-        mw.MIAMenuActions = []
+    if not hasattr(mw, 'MigakuMenuSettings'):
+        mw.MigakuMenuSettings = []
+    if not hasattr(mw, 'MigakuMenuActions'):
+        mw.MigakuMenuActions = []
 
     setting = QAction("Retirement Settings", mw)
     setting.triggered.connect(openSettings)
-    mw.MIAMenuSettings.append(setting)
+    mw.MigakuMenuSettings.append(setting)
     action = QAction("Run Mass Retirement", mw)
     action.triggered.connect(testretire)
-    mw.MIAMenuActions.append(action)
+    mw.MigakuMenuActions.append(action)
 
-    mw.MIAMainMenu.clear()
-    for act in mw.MIAMenuSettings:
-        mw.MIAMainMenu.addAction(act)
-    mw.MIAMainMenu.addSeparator()
-    for act in mw.MIAMenuActions:
-        mw.MIAMainMenu.addAction(act)
+    mw.MigakuMainMenu.clear()
+    for act in mw.MigakuMenuSettings:
+        mw.MigakuMainMenu.addAction(act)
+    mw.MigakuMainMenu.addSeparator()
+    for act in mw.MigakuMenuActions:
+        mw.MigakuMainMenu.addAction(act)
 
     if addMenu:
-        mw.form.menubar.insertMenu(mw.form.menuHelp.menuAction(), mw.MIAMainMenu)  
+        mw.form.menubar.insertMenu(mw.form.menuHelp.menuAction(), mw.MigakuMainMenu)  
 
 setupMenu()
 sched.Scheduler.answerCard = wrap(sched.Scheduler.answerCard, checkInterval)
@@ -538,4 +538,4 @@ aqt.addons.ConfigEditor.accept = wrap(aqt.addons.ConfigEditor.accept, supportAcc
 
 
 mw.refreshRetirementConfig = refreshConfig
-mw.runMIARetirement = applyRetirementActions
+mw.runMigakuRetirement = applyRetirementActions
