@@ -23,7 +23,7 @@
 ### Installation
 
 1. Install the version of Anki that is listed under the "Migaku Development Cycles" section of the AnkiWeb add-on [page](https://ankiweb.net/shared/info/1666520655).
-2. Download the latest version of the addon from [AnkiWeb](https://ankiweb.net/shared/info/16665206551655992655).
+2. Download the latest version of the addon from [AnkiWeb](https://ankiweb.net/shared/info/1666520655).
 
 ### Contributing
 
