@@ -19,6 +19,7 @@ import time
 
 addon_path = dirname(__file__)
 
+verNumber = "1.1.0"
 
 def getConfig():
     return mw.addonManager.getConfig(__name__)
@@ -466,7 +467,7 @@ def openSettings():
     vl.addWidget(bg3)
     vl.addLayout(vh6)
     loadCurrent(rt, rdn, bg1b1, bg1b2, bg1b3, bg2b1, bg2b2, bg3b1, bg3b2)
-    retirementMenu.setWindowTitle("Migaku Retirement Add-on Settings")
+    retirementMenu.setWindowTitle("Migaku Retirement Add-on Settings (Ver. " + verNumber + ")")
     retirementMenu.setWindowIcon(QIcon(join(addon_path, 'migaku.png')))
     retirementMenu.setLayout(vl)
     retirementMenu.show()
