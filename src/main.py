@@ -19,7 +19,7 @@ import time
 
 addon_path = dirname(__file__)
 
-verNumber = "1.1.0"
+verNumber = "1.2.0"
 
 def getConfig():
     return mw.addonManager.getConfig(__name__)
@@ -153,6 +153,7 @@ def getProgressWidget():
     layout = QVBoxLayout()
     progressWidget.setFixedSize(400, 70)
     progressWidget.setWindowModality(Qt.ApplicationModal)
+    progressWidget.setWindowIcon(QIcon(join(addon_path, 'migaku.png')))
     progressWidget.setWindowTitle("Running Mass Retirement...")
     bar = QProgressBar(progressWidget)
     if isMac:
@@ -294,7 +295,7 @@ def checkInterval(self, card, ease):
             mw.col._undo[2][last].retirementActions.append('move')
             mw.col._undo[2][last].retirementActions.append(card.did)
             moveToDeck(cardsToMove)
-            mw.col.db._db.commit()
+            mw.col.db.commit()
         if ndl > 0:
             undoCopy = mw.col._undo
             mw.checkpoint("Card Retirement")
