@@ -19,7 +19,7 @@ import time
 
 addon_path = dirname(__file__)
 
-verNumber = "1.2.0"
+verNumber = "1.2.1"
 
 def getConfig():
     return mw.addonManager.getConfig(__name__)
